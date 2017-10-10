@@ -1,4 +1,4 @@
-#include "Entropy.h"
+#include "Arduino_EntropyAssesment/Entropy.h"
 #include <RFM12B_arssi.h>
 #include <EEPROM.h>
 
