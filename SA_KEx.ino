@@ -148,6 +148,13 @@ void receiveRSSI(){
         //save RSSI
         uplink[theData.seqNum] = rssi;
         uplinkCounter++;
+
+        if(uplinkCounter % 50 == 0){
+          Serial.print(nodeID);
+          Serial.print(" uplink status ");
+          Serial.println(uplinkCounter);
+
+        }
       } else {
         //respond back
         int pair = theData.srcId;
@@ -283,10 +290,11 @@ void loop() {
     processBits(res, bits);
 
     float a = e.mostCommonValueEstimate(bits, len);
-   // float b = e.collisionEstimate(bits, len);
-    uplinkEntropy += a;
+    float b = 0;
+    uplinkEntropy += MAX(a,b);
     Sha256.print(bits);
-    Serial.print("Entropy: ");
+    Serial.print(nodeID);
+    Serial.print(" Entropy: ");
     Serial.println(uplinkEntropy);
     printHash(Sha256.result());
     uplinkCounter = 0;
