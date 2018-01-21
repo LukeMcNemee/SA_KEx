@@ -87,7 +87,7 @@ void setup() {
   analogWrite(LED_PIN, map(light, 0, 1023, 0, 255));
 
   Serial.print("Setup completed ");
-  Serial.print(root);
+  //Serial.print(root);
   Serial.println(nodeID);
 
 }
@@ -119,11 +119,11 @@ void reportRSSI(float data){
   theData.destId = parentID;
   theData.seqNum = uplinkCounter;
   theData.data = data;
-  Serial.println("node");
+  //Serial.println("node");
   radio.Send(parentID, (const void*)(&theData), sizeof(theData), true);
-  Serial.print(nodeID);
-  Serial.println(" msg send");
-  Serial.flush();
+  //Serial.print(nodeID);
+  //Serial.println(" msg send");
+  //Serial.flush();
 }
 
 //function for responder node
@@ -140,9 +140,9 @@ void receiveRSSI(){
       if(theData.destId != nodeID){
         return;
       }
-      Serial.print(nodeID);
-      Serial.print(" received msg from ");
-      Serial.println(theData.srcId);
+      //Serial.print(nodeID);
+      //Serial.print(" received msg from ");
+      //Serial.println(theData.srcId);
       //from uplink
       if(theData.srcId == parentID){
         //save RSSI
@@ -235,17 +235,17 @@ char stringToChar(String input){
 //compress whole string (1&0) to chars
 void processBits(String input, char* output){
   size_t len = (input.length() / 8) * 8;
-  Serial.print("Length ");
-  Serial.println(input.length());
+  //Serial.print("Length ");
+  //Serial.println(input.length());
   char bits[len+1] = "";
   size_t pos = 0;
   for (size_t i = 0; i < len/8; i++){
     char res_byte = stringToChar(input.substring(i*8, (i+1)*8));
     output[i] = res_byte;
-    Serial.print("byte:");
-    Serial.print(res_byte);
+    //Serial.print("byte:");
+    //Serial.print(res_byte);
   }
-  Serial.println();
+  //Serial.println();
 }
 
 #define TRESHOLD 5
@@ -268,7 +268,7 @@ void loop() {
   if(loopCounter % 500 == 0){
     blink(100);
     if(!root){
-      Serial.println(loopCounter);
+      //Serial.println(loopCounter);
     }
     loopCounter = 0;
     checkLight();
