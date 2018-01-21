@@ -283,12 +283,13 @@ void loop() {
     processBits(res, bits);
 
     float a = e.mostCommonValueEstimate(bits, len);
-    float b = e.collisionEstimate(bits, len);
-    uplinkEntropy += MAX(a,b);
+   // float b = e.collisionEstimate(bits, len);
+    uplinkEntropy += a;
     Sha256.print(bits);
     Serial.print("Entropy: ");
     Serial.println(uplinkEntropy);
     printHash(Sha256.result());
+    uplinkCounter = 0;
     Serial.println("=============================");
 
   }
