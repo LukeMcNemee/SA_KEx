@@ -55,7 +55,7 @@ uint8_t childCounter[4] = {0};
 float childEntropy[4] = {0};
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(57600);
   randomSeed(analogRead(0));
   myStats.clear(); //explicitly start clean
   Sha256.init();
@@ -72,8 +72,12 @@ void setup() {
     parentID = 1;
   }
   ////////////
-  root = nodeID == parentID;
-
+  if(nodeID == 1){
+    root = true;
+  } else {
+    root = false;
+  }
+  radio.Initialize(nodeID, RF12_868MHZ, groupID, 0);
   //init rssi measurement - pin and iddle voltage
   radio.SetRSSI( 0, 450);
   pinMode(LIGHT_PIN, INPUT);
@@ -82,7 +86,10 @@ void setup() {
   float light = analogRead(LIGHT_PIN);
   analogWrite(LED_PIN, map(light, 0, 1023, 0, 255));
 
-  Serial.println("Setup completed");
+  Serial.print("Setup completed ");
+  Serial.print(root);
+  Serial.println(nodeID);
+
 }
 
 void blink(int DELAY_MS){
@@ -104,14 +111,19 @@ void printHash(uint8_t* hash) {
 //function for initiating node
 void reportRSSI(float data){
   if(root){
+    //Serial.println("root");
     return;
   }
+  //Serial.println("node");
   theData.srcId = nodeID;
   theData.destId = parentID;
   theData.seqNum = uplinkCounter;
   theData.data = data;
-
+  Serial.println("node");
   radio.Send(parentID, (const void*)(&theData), sizeof(theData), true);
+  Serial.print(nodeID);
+  Serial.println(" msg send");
+  Serial.flush();
 }
 
 //function for responder node
@@ -128,6 +140,9 @@ void receiveRSSI(){
       if(theData.destId != nodeID){
         return;
       }
+      Serial.print(nodeID);
+      Serial.print(" received msg from ");
+      Serial.println(theData.srcId);
       //from uplink
       if(theData.srcId == parentID){
         //save RSSI
@@ -237,10 +252,11 @@ void processBits(String input, char* output){
 
 void checkLight(){
   float light = analogRead(LIGHT_PIN);
-  if(nodeID > TRESHOLD){
+  //Serial.println("light");
+  //if(nodeID > TRESHOLD){
     //send rssi
     reportRSSI(light);
-  }
+  //}
 }
 
 uint16_t loopCounter = 0;
@@ -251,7 +267,9 @@ void loop() {
 
   if(loopCounter % 500 == 0){
     blink(100);
-    Serial.println(loopCounter);
+    if(!root){
+      Serial.println(loopCounter);
+    }
     loopCounter = 0;
     checkLight();
   }
