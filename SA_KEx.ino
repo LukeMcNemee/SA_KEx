@@ -233,11 +233,11 @@ void processBits(String input, char* output){
   Serial.println();
 }
 
-#define TRESHOLD 100
+#define TRESHOLD 5
 
 void checkLight(){
   float light = analogRead(LIGHT_PIN);
-  if(light > TRESHOLD){
+  if(nodeID > TRESHOLD){
     //send rssi
     reportRSSI(light);
   }
