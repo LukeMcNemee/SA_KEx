@@ -64,6 +64,14 @@ void setup() {
   groupID = EEPROM.read(GROUP_ID_LOCATION);
   parentID = EEPROM.read(PARENT_ID_LOCATION);
 
+  ////////////
+  if(nodeID == 17 || nodeID == 18){
+    parentID = 16;
+  }
+  if(nodeID == 16){
+    parentID = 1;
+  }
+  ////////////
   root = nodeID == parentID;
 
   //init rssi measurement - pin and iddle voltage
